@@ -56,3 +56,11 @@ def fetch_all(url, params, page_size=5000):
         print(f"Fetched {len(all_rows)} / {total}")
 
     return all_rows
+
+
+# 1. Build a filename from the dataset name and date range
+#      e.g. demand_2026-09-01_2026-09-30.json
+# 2. Make sure the data/raw/ folder exists
+# 3. Open that file for writing (same name → overwrite → no duplicates)
+# 4. Write the rows into it as JSON, unchanged
+# 5. Return the file path so the next step knows where the data is
