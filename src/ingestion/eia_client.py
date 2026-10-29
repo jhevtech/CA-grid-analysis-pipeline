@@ -1,6 +1,10 @@
 import time
 import requests
 
+class NoDataError(Exception):
+    """Request succeeded but matched zero rows."""
+    pass
+
 def fetch_page(url, params, max_retries=3):
     """Make one EIA request. Retry server errors. Return (rows, total.)"""
     for attempt in range(1, max_retries + 1):
@@ -47,7 +51,7 @@ def fetch_all(url, params, page_size=5000):
         rows, total = fetch_page(url, page_params)
 
         if total == 0:
-            raise ValueError("0 rows matched. Check facets and datas.")
+            raise NoDataError("0 rows matched. Check facets and datas.")
         if not rows:
             break
 
@@ -57,10 +61,19 @@ def fetch_all(url, params, page_size=5000):
 
     return all_rows
 
-
+''' 
 # 1. Build a filename from the dataset name and date range
 #      e.g. demand_2026-09-01_2026-09-30.json
 # 2. Make sure the data/raw/ folder exists
 # 3. Open that file for writing (same name → overwrite → no duplicates)
 # 4. Write the rows into it as JSON, unchanged
 # 5. Return the file path so the next step knows where the data is
+
+# 1. Build the list of (start, end) for every month, July 2015 → this month
+# 2. For each month:
+#      If its raw file exists AND it's not the current month → skip
+#      Otherwise fetch all rows for that month
+#      If there are zero rows → log it, skip, keep going (don't crash)
+#      Save the rows raw
+
+'''

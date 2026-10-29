@@ -7,12 +7,16 @@ RAW_DIR = REPO_ROOT / "data" / "raw"
 def save_raw(rows, dataset, start, end):
     """Save rows exactly as EIA sent them. Same inputs -> same file(overwrite)."""
 
-    filename = f"{dataset}_{start}_{end}.json"
+    #filename = f"{dataset}_{start}_{end}.json"
 
     RAW_DIR.mkdir(parents=True, exist_ok=True)
-    path = RAW_DIR / filename
+    #path = RAW_DIR / filename
+    path = raw_path(dataset, start, end)
 
     with open(path, "w") as f:
         json.dump(rows, f)
 
     return path 
+
+def raw_path(dataset, start, end):
+    return RAW_DIR / f"{dataset}_{start}_{end}.json"
